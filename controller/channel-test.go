@@ -107,7 +107,7 @@ func testChannel(channel *model.Channel, testModel string) (err error, openAIErr
 
 	adaptor.Init(info)
 
-	convertedRequest, err := adaptor.ConvertRequest(c, info, request)
+	convertedRequest, err := adaptor.ConvertOpenAIRequest(c, info, request)
 	if err != nil {
 		return err, nil
 	}
@@ -187,7 +187,9 @@ func buildTestRequest(model string) *dto.GeneralOpenAIRequest {
 	if strings.HasPrefix(model, "o1") || strings.HasPrefix(model, "o3") {
 		testRequest.MaxCompletionTokens = 10
 	} else if strings.Contains(model, "thinking") {
-		testRequest.MaxTokens = 50
+		if !strings.Contains(model, "claude") {
+			testRequest.MaxTokens = 50
+		}
 	} else {
 		testRequest.MaxTokens = 10
 	}
